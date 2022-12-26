@@ -1,5 +1,5 @@
 CC=gcc -g
-LIBS=-lopencv_core -lopencv_highgui -lopencv_imgproc -lstdc++ -ltiff
+LIBS=-lopencv_core -lopencv_highgui -lopencv_imgproc -lstdc++ -ltiff -lm
 INCLUDE=-I/usr/include/opencv4
 CFLAGS=-Wall -Werror $(INCLUDE)
 LDFLAGS=$(LIBS)
@@ -8,8 +8,9 @@ MKDIR_P = mkdir -p
 .PHONY: directories
 
 all: directories spectator
+
 spectator: obj/main.o obj/geometry.o obj/draw.o
-	$(CC)  -o $@ $< $(CFLAGS) $(LDFLAGS)
+	$(CC)  -o $@ obj/main.o obj/geometry.o obj/draw.o $(LDFLAGS)
 
 obj/main.o: src/main.cpp src/geometry.h src/draw.h
 	$(CC) -c src/main.cpp -o $@ $(CFLAGS)

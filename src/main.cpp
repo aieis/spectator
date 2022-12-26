@@ -3,6 +3,8 @@
 #include <opencv2/imgproc.hpp>
 #include <math.h>
 
+#include "draw.h"
+
 typedef struct world world;
 typedef int* object;
 struct world
@@ -68,20 +70,18 @@ camera camera_make(double theta, int x, int y, int f, int sensor_size)
   camera cam;
   cam.theta = theta;
   cam.x = x;
+  cam.y = y;
   cam.f = f;
   cam.sensor_size = sensor_size;
   return cam;
 }
 
-void draw_camera_in_world(world* world, camera cam)
+void draw_camera_in_world(cv::Mat& img, world* world, camera cam)
 {
-  // double S = sin(cam.theta);
-  // double C = cos(cam.theta);
-  
-  // //draw camera box
-  // int r = cam.sensor_size;
-  // int ctx = r * S;
-  // int cty = r * C;
+  rec r = rec_make_orth(cam.x, cam.y, cam.sensor_size, 20);
+  draw_rec(img, r, cv::Scalar(127), 2);
+  r = rec_rotate(r, cam.theta);
+  draw_rec(img, r, cv::Scalar(0), 2);
 }
 
 
@@ -89,8 +89,13 @@ int main()
 {
   printf("Creating world...\n");
   world* w = world_make_default();
+  
   printf("Drawing world...\n");
   cv::Mat img = world_draw(w);
+
+  camera cam = camera_make(M_PI/200, 20, 20, 10, 30);
+  draw_camera_in_world(img, w, cam);
+  
   printf("Displaying world...\n");
   while (cv::waitKey(1) != 'q') {
     cv::imshow("World", img);
