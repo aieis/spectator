@@ -82,7 +82,25 @@ void draw_camera_in_world(cv::Mat& img, world* world, camera cam)
   r = rec_rotate(r, cam.theta);
   draw_rec(img, r, cv::Scalar(0), 2);
 
-  /* */
+  double S = sin(cam.theta);
+  double C = cos(cam.theta);
+  vec2 fv;
+  if (C == 0) {
+    fv = vec2_make(-cam.f, 0);
+  } else {
+    double T = S / C;
+    double dx = sqrt(cam.f*cam.f / (T*T + 1));
+    double dy = T * dx;
+    
+    /* TODO: Make y go from the reverse */
+    fv = vec2_make(dx, -dy);
+    printf("dx: %f, dy: %f\n", dx, dy);
+  }
+  
+  
+  vec2 lp = vec2_subtract(r.bl, fv);
+  vec2 rp = vec2_subtract(r.br, fv);
+  draw_line(img, lp, rp, cv::Scalar(0), 2);
 }
 
 
