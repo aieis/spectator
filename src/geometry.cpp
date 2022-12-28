@@ -11,10 +11,21 @@ vec2 vec2_make(double x, double y)
 
 vec2 vec2_rotate(vec2 vec, double theta)
 {
-  int r = sqrt(vec.x*vec.x + vec.y*vec.y);
-  double x = r*sin(theta);
-  double y = r*cos(theta);
+  double C = cos(theta);
+  double S = sin(theta);
+  double x = C*vec.x - S*vec.y;
+  double y = S*vec.x + C*vec.y;
   return vec2_make(x, y);
+}
+
+vec2 vec2_subtract(vec2 v1, vec2 v2)
+{
+  return vec2_make(v1.x-v2.x, v1.y-v2.y);
+}
+
+vec2 vec2_add(vec2 v1, vec2 v2)
+{
+  return vec2_make(v1.x + v2.x, v1.y + v2.y);
 }
 
 rec rec_make_orth(double x, double y, double w, double h)
@@ -39,10 +50,17 @@ rec rec_make(vec2 tl, vec2 tr, vec2 br, vec2 bl)
 
 rec rec_rotate(rec r, double theta)
 {
+
+  vec2 center = vec2_make((r.tl.x + r.br.x)/2, (r.tl.y + r.br.y)/2);
+  vec2 tl = vec2_subtract(r.tl, center);
+  vec2 tr = vec2_subtract(r.tr, center);
+  vec2 br = vec2_subtract(r.br, center);
+  vec2 bl = vec2_subtract(r.bl, center);
+  
   rec rc;
-  rc.tl = vec2_rotate(r.tl, theta);
-  rc.tr = vec2_rotate(r.tr, theta);
-  rc.br = vec2_rotate(r.br, theta);
-  rc.bl = vec2_rotate(r.bl, theta);
+  rc.tl = vec2_add(vec2_rotate(tl, theta), center);
+  rc.tr = vec2_add(vec2_rotate(tr, theta), center);
+  rc.br = vec2_add(vec2_rotate(br, theta), center);
+  rc.bl = vec2_add(vec2_rotate(bl, theta), center);
   return rc;
 }
