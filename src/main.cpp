@@ -101,6 +101,14 @@ void draw_camera_in_world(cv::Mat& img, world* world, camera cam)
   vec2 lp = vec2_subtract(r.bl, fv);
   vec2 rp = vec2_subtract(r.br, fv);
   draw_line(img, lp, rp, cv::Scalar(0), 2);
+
+  /* Draw FOV */
+  double length = 600;
+  vec2 center = vec2_make((r.tl.x + r.br.x)/2, (r.tl.y + r.br.y)/2);
+  vec2 lp_to = vec2_extend_line(lp, center, length);
+  draw_line(img, lp, lp_to, cv::Scalar(0), 1);
+  vec2 rp_to = vec2_extend_line(rp, center, length);
+  draw_line(img, rp, rp_to, cv::Scalar(0), 1);
 }
 
 

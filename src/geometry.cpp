@@ -28,6 +28,16 @@ vec2 vec2_add(vec2 v1, vec2 v2)
   return vec2_make(v1.x + v2.x, v1.y + v2.y);
 }
 
+vec2 vec2_extend_line(vec2 from, vec2 to, double length)
+{
+  vec2 bound = vec2_subtract(to, from);
+  double m = bound.y / bound.x;
+  double dx = sqrt(length * length / (m*m + 1));
+  double dy = m*dx;
+  vec2 bound_to = vec2_make(from.x + dx, from.y + dy);
+  return bound_to;
+}
+
 rec rec_make_orth(double x, double y, double w, double h)
 {
   rec r;
